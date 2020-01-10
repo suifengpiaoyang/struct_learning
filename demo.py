@@ -82,6 +82,31 @@ def demo2_extendsion_1():
     behind_2_bytes_num = int(hex_n[8:], 16)             # 32896
     print((front_4_bytes_num,behind_2_bytes_num))       # (4042322160, 32896)
 
+def demo3():
+
+    # 解析 bmp 图片的一些信息
+    # BMP格式采用小端方式存储数据，文件头的结构按顺序如下：
+    # 两个字节：'BM'表示Windows位图，'BA'表示OS/2位图；
+    # 一个4字节整数：表示位图大小；
+    # 一个4字节整数：保留位，始终为0；
+    # 一个4字节整数：实际图像的偏移量；
+    # 一个4字节整数：Header的字节数；
+    # 一个4字节整数：图像宽度；
+    # 一个4字节整数：图像高度；
+    # 一个2字节整数：始终为1；
+    # 一个2字节整数：颜色数。
+    filename = 'test.bmp'
+    with open(filename,'rb')as fl:
+        data = fl.read(30)
+    result = struct.unpack('<ccIIIIIIHH', data)
+    # data value:
+    # b'BM\xb82\x02\x00\x00\x00\x00\x006\x00\x00\x00(\x00\x00\x00\xe0\x01\x00\x00d\x00\x00\x00\x01\x00\x18\x00'
+    # result:
+    # (b'B', b'M', 144056, 0, 54, 40, 480, 100, 1, 24)
+    print(data)
+    print(result)
+    print('The size of {} is {} kb.'.format(filename,round(result[2]/1024)))
+
 if __name__ == '__main__':
 
     # The following three demo can get the same result.
@@ -92,4 +117,5 @@ if __name__ == '__main__':
     # The following two demo can get the same result.
     demo2()
     demo2_extendsion_1()
-    
+
+    demo3()
