@@ -60,8 +60,36 @@ def demo_extendsion_2():
     result = struct.pack('>I', n)               # b'\x00\x9c@c'
     print(result)
 
+def demo2():
+
+    # unpack把bytes变成相应的数据类型
+    # 对于下面的 n 而言，每一个类似 \xf0 的为一个字节，
+    # 所以不难看出，n 有 6 个字节
+    # I 解析出 4 个字节，H 解析 2 个字节
+    # 所以结果就是解析出前面 4 个字节合成的十进制数和
+    # 后面两个字节合成的十进制数
+    # H 表示2个字节的数字
+    n =  b'\xf0\xf0\xf0\xf0\x80\x80'
+    result = struct.unpack('>IH', n)            # (4042322160, 32896)
+    print(result)
+
+def demo2_extendsion_1():
+
+    # 写一个函数来证明以上的结论
+    n = b'\xf0\xf0\xf0\xf0\x80\x80'
+    hex_n = binascii.hexlify(n).decode()                # 'f0f0f0f08080'
+    front_4_bytes_num = int(hex_n[:8], 16)              # 4042322160
+    behind_2_bytes_num = int(hex_n[8:], 16)             # 32896
+    print((front_4_bytes_num,behind_2_bytes_num))       # (4042322160, 32896)
+
 if __name__ == '__main__':
+
     # The following three demo can get the same result.
     demo()
     demo_extendsion_1()
     demo_extendsion_2()
+
+    # The following two demo can get the same result.
+    demo2()
+    demo2_extendsion_1()
+    
